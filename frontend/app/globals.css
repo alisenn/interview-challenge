@@ -5,22 +5,29 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
+/* Force light mode for this application */
+html, body {
+  background: #f9fafb !important; /* bg-gray-50 */
+  color: #171717 !important;
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure all containers maintain light background */
+#__next, [data-nextjs-scroll-focus-boundary] {
+  background: #f9fafb !important;
+  min-height: 100vh;
+}
+
+/* Override any dark mode preferences */
+@media (prefers-color-scheme: dark) {
+  html, body {
+    background: #f9fafb !important; /* Keep light background */
+    color: #171717 !important; /* Keep dark text */
+  }
+  
+  #__next, [data-nextjs-scroll-focus-boundary] {
+    background: #f9fafb !important;
+  }
 }
