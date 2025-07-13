@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { CreateMedicationDto, UpdateMedicationDto } from '../dto/medication.dto';
 import { MedicationService } from '../services/medication.service';
 
@@ -7,7 +7,7 @@ export class MedicationController {
   constructor(private readonly medicationService: MedicationService) {}
 
   @Post()
-  create(@Body(ValidationPipe) createMedicationDto: CreateMedicationDto) {
+  create(@Body() createMedicationDto: CreateMedicationDto) {
     return this.medicationService.create(createMedicationDto);
   }
 
@@ -24,7 +24,7 @@ export class MedicationController {
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationPipe) updateMedicationDto: UpdateMedicationDto,
+    @Body() updateMedicationDto: UpdateMedicationDto,
   ) {
     return this.medicationService.update(id, updateMedicationDto);
   }
