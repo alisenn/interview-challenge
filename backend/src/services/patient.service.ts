@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePatientDto, UpdatePatientDto } from '../dto/patient.dto';
 import { Patient } from '../entities/patient.entity';
+import { DateUtils } from '../utils/date.utils';
 
 @Injectable()
 export class PatientService {
@@ -20,10 +21,12 @@ export class PatientService {
   }
 
   async findAll(): Promise<Patient[]> {
-    return this.patientRepository.find({
+    const patients = await this.patientRepository.find({
       relations: ['assignments', 'assignments.medication'],
       order: { createdAt: 'DESC' },
     });
+
+    return patients.map(patient => this.addRemainingDaysToAssignments(patient));
   }
 
   async findOne(id: number): Promise<Patient> {
@@ -36,7 +39,7 @@ export class PatientService {
       throw new NotFoundException(`Patient with ID ${id} not found`);
     }
 
-    return patient;
+    return this.addRemainingDaysToAssignments(patient);
   }
 
   async update(id: number, updatePatientDto: UpdatePatientDto): Promise<Patient> {
@@ -54,5 +57,15 @@ export class PatientService {
   async remove(id: number): Promise<void> {
     const patient = await this.findOne(id);
     await this.patientRepository.remove(patient);
+  }
+
+  private addRemainingDaysToAssignments(patient: Patient): Patient {
+    if (patient.assignments) {
+      patient.assignments = patient.assignments.map(assignment => {
+        assignment.remainingDays = DateUtils.calculateRemainingDays(assignment.startDate, assignment.numberOfDays);
+        return assignment;
+      });
+    }
+    return patient;
   }
 }

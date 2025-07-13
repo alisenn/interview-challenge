@@ -5,6 +5,7 @@ import { Assignment } from '../entities/assignment.entity';
 import { Medication } from '../entities/medication.entity';
 import { Patient } from '../entities/patient.entity';
 import { AssignmentService } from '../services/assignment.service';
+import { DateUtils } from '../utils/date.utils';
 
 describe('AssignmentService', () => {
   let service: AssignmentService;

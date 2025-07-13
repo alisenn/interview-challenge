@@ -5,6 +5,7 @@ import { CreateAssignmentDto, UpdateAssignmentDto } from '../dto/assignment.dto'
 import { Assignment } from '../entities/assignment.entity';
 import { Medication } from '../entities/medication.entity';
 import { Patient } from '../entities/patient.entity';
+import { DateUtils } from '../utils/date.utils';
 
 @Injectable()
 export class AssignmentService {
@@ -87,17 +88,7 @@ export class AssignmentService {
    * Formula: (startDate + numberOfDays) - today
    */
   calculateRemainingDays(startDate: Date, numberOfDays: number): number {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time for accurate date comparison
-    
-    const endDate = new Date(startDate);
-    endDate.setDate(endDate.getDate() + numberOfDays);
-    endDate.setHours(0, 0, 0, 0);
-    
-    const diffTime = endDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    return diffDays;
+    return DateUtils.calculateRemainingDays(startDate, numberOfDays);
   }
 
   private addRemainingDays(assignment: Assignment): Assignment {
